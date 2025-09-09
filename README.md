@@ -62,7 +62,7 @@ npm run dev
 
 
 ### MCP 服务器配置：image-processor
-
+```json
 {
   "mcpServers": {
     "image-processor": {
@@ -71,6 +71,7 @@ npm run dev
     }
   }
 }
+```
 
 
 ## 🎯 图片来源支持
