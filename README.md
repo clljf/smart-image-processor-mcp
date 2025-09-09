@@ -61,6 +61,16 @@ npm run dev
 ```
 
 
+### MCP 服务器配置：image-processor
+
+{
+  "mcpServers": {
+    "image-processor": {
+      "command": "npx",
+      "args": ["-y", "@chenlei28188/image-processor-mcp@latest"]
+    }
+  }
+}
 
 
 ## 🎯 图片来源支持

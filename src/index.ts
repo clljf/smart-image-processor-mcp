@@ -1,16 +1,14 @@
 #!/usr/bin/env node
-
-// 导入MCP SDK的核心组件
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
-  CallToolRequestSchema,    // 工具调用请求的JSON Schema
-  ErrorCode,               // MCP标准错误码
-  ListToolsRequestSchema,  // 工具列表请求的JSON Schema
-  McpError,               // MCP标准错误类
+  CallToolRequestSchema,  
+  ErrorCode,              
+  ListToolsRequestSchema,  
+  McpError,               
 } from '@modelcontextprotocol/sdk/types.js';
 
-// 导入图片处理相关的服务类
+// 导入功能模块
 import { ImageAnalyzer } from './services/ImageAnalyzer.js';      // 图片分析服务
 import { ImageCompressor } from './services/ImageCompressor.js';  // 图片压缩服务
 import { FormatConverter } from './services/FormatConverter.js';  // 格式转换服务
@@ -19,7 +17,7 @@ import { BatchProcessor } from './services/BatchProcessor.js';    // 批量处�
 
 // 导入工具类
 import { OutputFormatter } from './utils/OutputFormatter.js';     // 输出格式化工具
-import { Logger } from './utils/Logger.js';                       // 日志工具
+import { Logger } from './utils/Logger.js';                       // 简易日志工具
 
 /**
  * @class ImageProcessorMCPServer
@@ -33,14 +31,14 @@ import { Logger } from './utils/Logger.js';                       // 日志工�
  * 5. 协调各个模块，完成从图片加载、处理、格式化到返回结果的完整工作流。
  */
 class ImageProcessorMCPServer {
-  // MCP服务器实例，负责处理协议通信
-  private server: Server;
+  
+  private server: Server;// MCP服务器实例
   
   // 各种图片处理服务实例
-  private imageAnalyzer: ImageAnalyzer;      // 图片分析服务（OCR、颜色分析、元数据等）
-  private imageCompressor: ImageCompressor;  // 图片压缩服务（WebP、AVIF、MozJPEG等）
+  private imageAnalyzer: ImageAnalyzer;      // 图片分析服务
+  private imageCompressor: ImageCompressor;  // 图片压缩服务
   private formatConverter: FormatConverter;  // 格式转换服务（JPG/PNG/WebP等互转）
-  private colorExtractor: ColorExtractor;    // 颜色提取服务（主色调、调色板等）
+  private colorExtractor: ColorExtractor;    // 颜色提取服务
   private batchProcessor: BatchProcessor;    // 批量处理服务（并发控制、进度跟踪）
   
   // 工具类实例
@@ -48,10 +46,10 @@ class ImageProcessorMCPServer {
   private logger: Logger;                    // 日志记录工具
 
   /**
-   * 构造函数：初始化MCP服务器和所有服务组件
+   * 构造函数：初始化MCP服务器和所有依赖组件
    */
   constructor() {
-    // 创建MCP服务器实例，配置服务器基本信息
+    // 1.创建MCP服务器实例，配置服务器基本信息
     this.server = new Server(
       {
         name: 'image-processor-mcp',    // 服务器名称，用于MCP协议识别
@@ -62,7 +60,9 @@ class ImageProcessorMCPServer {
       }
     );
 
-    // 初始化日志工具（所有服务都需要日志记录）
+    //  2.实例化核心模块
+
+    //初始化日志工具（所有服务都需要日志记录）
     this.logger = new Logger();
     
     // 初始化各个图片处理服务，都注入logger实例用于统一日志管理
@@ -90,9 +90,8 @@ class ImageProcessorMCPServer {
       tools: [
         // 工具1：智能图片分析
         {
-          name: 'analyze_image',  // 工具名称，AI模型调用时使用
+          name: 'analyze_image', 
           description: '智能分析图片：获取尺寸、格式、颜色分析、OCR文字识别等详细信息',
-          // 定义输入参数的JSON Schema，用于验证AI模型传入的参数
           inputSchema: {
             type: 'object',
             properties: {
@@ -113,6 +112,7 @@ class ImageProcessorMCPServer {
             required: ['source']  // 必需参数：图片来源
           }
         },
+        //工具2：图片压缩优化
         {
           name: 'compress_image',
           description: '图片压缩优化：支持多种压缩算法和质量选项',
@@ -139,6 +139,7 @@ class ImageProcessorMCPServer {
             required: ['source']
           }
         },
+        //工具3：格式转换
         {
           name: 'convert_format',
           description: '格式转换：支持JPG/PNG/WebP/AVIF等格式互转',
@@ -168,6 +169,7 @@ class ImageProcessorMCPServer {
             required: ['source', 'targetFormat']
           }
         },
+        //工具4：颜色提取
         {
           name: 'extract_colors',
           description: '提取图片主色调和配色方案',
@@ -193,6 +195,7 @@ class ImageProcessorMCPServer {
             required: ['source']
           }
         },
+        //工具5：批量处理
         {
           name: 'batch_process',
           description: '批量图片处理：支持多张图片的批量操作',
