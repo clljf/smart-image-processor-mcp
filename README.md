@@ -61,7 +61,7 @@ npm run dev
 ```
 
 
-### MCP 服务器配置：image-processor
+### 使用npx配置MCP：image-processor
 ```json
 {
   "mcpServers": {
